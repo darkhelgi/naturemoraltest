@@ -1,0 +1,29 @@
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Тест: Природа и мораль</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="libs/chart.umd.min.js"></script>
+  <script src="questions.js"></script>
+  <script src="logic.js" defer></script>
+  <script src="export.js" defer></script>
+  <script src="aggregate.js" defer></script>
+  <script src="viewlog.js" defer></script>
+</head>
+<body>
+  <h1>Тест: Природа и мораль</h1>
+  <form id="quizForm">
+    <div id="questionContainer"></div>
+    <button type="button" onclick="calculateResults()">Узнать результат</button>
+  </form>
+  <div id="results"></div>
+  <canvas id="radarChart" width="500" height="500"></canvas>
+  <button type="button" onclick="exportCSV(scores, axisDescriptions)">Скачать результат (CSV)</button>
+  <hr>
+  <button type="button" onclick="showAverageChart()">Показать средние значения</button>
+  <canvas id="averageChart" width="500" height="500"></canvas>
+  <hr>
+  <button type="button" onclick="showResultLog()">Показать все сохранённые результаты</button>
+  <div id="resultLog"></div>
+</body>
+</html>
