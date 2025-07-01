@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Администрирование: Природа и мораль</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="questions.js"></script>
+  <script>
+    function clearData() {
+      localStorage.removeItem("morality_test_all_results");
+      localStorage.removeItem("morality_test_csv");
+      alert("Все сохранённые результаты удалены.");
+    }
+
+    function downloadAllData() {
+      const csv = localStorage.getItem("morality_test_csv");
+      if (!csv) return alert("Нет данных для экспорта.");
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = "morality_test_results_full.csv";
+      link.click();
+    }
+
+    function addQuestion() {
+      const story = document.getElementById("story").value.trim();
+      const text = document.getElementById("text").value.trim();
+      const axes = {};
+      document.querySelectorAll(".axis-weight").forEach(input => {
+        const val = parseFloat(input.value);
+        if (!isNaN(val)) axes[input.name] = val;
+      });
+      if (!story || !text || Object.keys(axes).length === 0) {
+        alert("Пожалуйста, заполните историю, вопрос и хотя бы одну шкалу.");
+        return;
+      }
+      const newQ = { story, text, axes };
+      const newQuestions = JSON.parse(localStorage.getItem("new_questions") || "[]");
+      newQuestions.push(newQ);
+      localStorage.setItem("new_questions", JSON.stringify(newQuestions));
+      alert("Вопрос добавлен в локальное хранилище.");
+      document.getElementById("story").value = "";
+      document.getElementById("text").value = "";
+      document.querySelectorAll(".axis-weight").forEach(input => input.value = "");
+    }
+  </script>
+</head>
+<body>
+  <h1>Панель администратора</h1>
+
+  <section>
+    <h2>Управление результатами</h2>
+    <button onclick="downloadAllData()">Экспортировать все результаты</button>
+    <button onclick="clearData()">Очистить все результаты</button>
+  </section>
+
+  <section>
+    <h2>Добавить новый вопрос</h2>
+    <label>История:<br><textarea id="story" rows="3" cols="60"></textarea></label><br>
+    <label>Формулировка вопроса:<br><textarea id="text" rows="2" cols="60"></textarea></label><br>
+    <h3>Вес шкал:</h3>
+    <div>
+      <label>Утилитаризм: <input type="number" class="axis-weight" name="utilitarianism"></label>
+      <label>Деонтология: <input type="number" class="axis-weight" name="deontology"></label>
+      <label>Антропоцентризм: <input type="number" class="axis-weight" name="anthropocentrism"></label>
+      <label>Биоцентризм: <input type="number" class="axis-weight" name="biocentrism"></label>
+      <label>Экоцентризм: <input type="number" class="axis-weight" name="ecocentrism"></label>
+      <label>Атомизм: <input type="number" class="axis-weight" name="atomism"></label>
+      <label>Холизм: <input type="number" class="axis-weight" name="holism"></label>
+    </div>
+    <br>
+    <button onclick="addQuestion()">Добавить вопрос</button>
+  </section>
+</body>
+</html>
