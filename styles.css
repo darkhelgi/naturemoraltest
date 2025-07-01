@@ -1,0 +1,43 @@
+body {
+  font-family: sans-serif;
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+  background: repeating-linear-gradient(
+    45deg,
+    #eafbe4 0px,
+    #eafbe4 1px,
+    #dff6da 1px,
+    #dff6da 3px
+  );
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  color: #226688;
+}
+
+hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid #ccc;
+}
+
+form label {
+  display: inline-block;
+  margin: 0.5rem 1rem 1rem 0;
+}
+
+#results {
+  margin-top: 2rem;
+}
+
+canvas {
+  margin-top: 2rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 500px !important;
+  height: 500px !important;
+}
