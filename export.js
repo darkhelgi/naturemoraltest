@@ -1,39 +1,21 @@
-// export.js — добавление результатов в persistent файл (имитация через localStorage)
+// export.js — экспорт результатов и сохранение лога
 
-function appendToResultLog(scores, axisDescriptions) {
-  const result = {
-    timestamp: new Date().toISOString(),
-    data: Object.fromEntries(
-      Object.entries(scores).map(([axis, value]) => [
-        axisDescriptions[axis].split(" — ")[0],
-        value
-      ])
-    )
-  };
-
-  let allResults = JSON.parse(localStorage.getItem("morality_test_all_results") || "[]");
-  allResults.push(result);
-  localStorage.setItem("morality_test_all_results", JSON.stringify(allResults));
-
-  const csvHeader = "Дата, " + Object.keys(result.data).join(", ") + "\n";
-  const csvRow = result.timestamp + ", " + Object.values(result.data).join(", ") + "\n";
-
-  // Если ещё нет файла, создаём с заголовком, иначе дописываем строку
-  let fullCSV = localStorage.getItem("morality_test_csv") || csvHeader;
-  fullCSV += csvRow;
-  localStorage.setItem("morality_test_csv", fullCSV);
-
-  const blob = new Blob([fullCSV], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute('download', 'morality_test_results_log.csv');
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-// автоматически использовать при расчёте результата
 function exportCSV(scores, axisDescriptions) {
-  appendToResultLog(scores, axisDescriptions);
+  const header = "Шкала,Баллы,Описание\n";
+  const rows = Object.keys(scores).map(a =>
+    `${axisDescriptions[a].split(" — ")[0]},${scores[a]},${axisDescriptions[a]}`
+  );
+  const csv = header + rows.join("\n");
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `morality_test_result_${new Date().toISOString().split("T")[0]}.csv`;
+  link.click();
+
+  // запись в локальный лог
+  const previous = JSON.parse(localStorage.getItem("morality_test_all_results") || "[]");
+  previous.push({ timestamp: Date.now(), data: scores });
+  localStorage.setItem("morality_test_all_results", JSON.stringify(previous));
+  localStorage.setItem("morality_test_csv", previous.map(row => Object.values(row.data).join(",")).join("\n"));
 }
