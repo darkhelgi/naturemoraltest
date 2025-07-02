@@ -19,11 +19,11 @@ const scores = Object.fromEntries(axes.map(a => [a, 0]));
 
 window.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('questionContainer');
-  if (!container || typeof questions === 'undefined') {
+  if (!container || typeof window.questions === 'undefined') {
     console.error("Контейнер с id='questionContainer' или массив 'questions' не найден.");
     return;
   }
-  questions.forEach((q, i) => {
+  window.questions.forEach((q, i) => {
     const block = document.createElement('div');
     block.innerHTML = `<hr><p><em>${q.story}</em></p><p><strong>${q.text}</strong></p>
       <label><input type='radio' name='q${i}' value='2'> Согласен</label>
@@ -34,7 +34,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function calculateResults() {
   axes.forEach(a => scores[a] = 0);
-  questions.forEach((q, i) => {
+  window.questions.forEach((q, i) => {
     const selected = document.querySelector(`input[name='q${i}']:checked`);
     if (selected) {
       const val = parseInt(selected.value);
