@@ -19,6 +19,10 @@ const scores = Object.fromEntries(axes.map(a => [a, 0]));
 
 window.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('questionContainer');
+  if (!container || typeof questions === 'undefined') {
+    console.error("Контейнер с id='questionContainer' или массив 'questions' не найден.");
+    return;
+  }
   questions.forEach((q, i) => {
     const block = document.createElement('div');
     block.innerHTML = `<hr><p><em>${q.story}</em></p><p><strong>${q.text}</strong></p>
@@ -35,12 +39,19 @@ function calculateResults() {
     if (selected) {
       const val = parseInt(selected.value);
       Object.entries(q.axes).forEach(([axis, weight]) => {
-        scores[axis] += val * weight;
+        if (scores.hasOwnProperty(axis)) {
+          scores[axis] += val * weight;
+        }
       });
     }
   });
 
-  const ctx = document.getElementById("radarChart").getContext("2d");
+  const canvas = document.getElementById("radarChart");
+  if (!canvas) {
+    console.error("Canvas с id='radarChart' не найден.");
+    return;
+  }
+  const ctx = canvas.getContext("2d");
   if (window.radarChart && typeof window.radarChart.destroy === 'function') {
     window.radarChart.destroy();
   }
@@ -71,5 +82,8 @@ function calculateResults() {
     out += `<tr><td>${axisDescriptions[a].split(" — ")[0]}</td><td>${scores[a]}</td><td>${axisDescriptions[a]}</td></tr>`;
   });
   out += "</table>";
-  document.getElementById("results").innerHTML = out;
+  const resultDiv = document.getElementById("results");
+  if (resultDiv) {
+    resultDiv.innerHTML = out;
+  }
 }
